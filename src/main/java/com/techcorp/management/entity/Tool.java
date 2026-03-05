@@ -6,8 +6,12 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.AllArgsConstructor;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import org.hibernate.validator.constraints.URL;
+import jakarta.validation.constraints.*;
+
+import com.fasterxml.jackson.annotation.*;
+
+import org.hibernate.annotations.UpdateTimestamp;
 
 import java.util.List;
 
@@ -22,12 +26,18 @@ public class Tool {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @NotBlank(message = "Le nom est obligatoire")
+    @Size(min = 2, max = 100, message = "Nom entre 2 et 100 caractères")
+    @Column(unique = true)
     private String name;
 
     private String description;
 
+    @NotBlank(message = "Vndeur obligatoire")
+    @Size(max = 100, message = "100 caractères maximum")
     private String vendor;
 
+    @URL(message = "Format d'URL invalide")
     @Column(name = "website_url")
     private String websiteUrl;
 
@@ -36,12 +46,15 @@ public class Tool {
     @JsonIgnoreProperties("category")
     private Category category;
 
-    @Column(name = "monthly_cost")
+    @NotNull(message = "Cout mensuel obligatoire")
+    @DecimalMin(value = "0.0", inclusive = true, message = "Cout >= 0")
+    @Column(name = "monthly_cost", columnDefinition = "DOUBLE")
     private Double monthlyCost;
 
     @Column(name = "active_users_count")
     private Integer activeUsersCount;
 
+    @NotNull(message = "Departement obligatoire")
     @Column(name = "owner_department")
     @Enumerated(EnumType.STRING)
     private Department ownerDepartment;
@@ -52,6 +65,7 @@ public class Tool {
     @Column(name = "created_at", updatable = false)
     private LocalDateTime createdAt;
 
+    @UpdateTimestamp
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
 

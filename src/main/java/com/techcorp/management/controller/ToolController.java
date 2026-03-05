@@ -9,6 +9,8 @@ import com.techcorp.management.repository.ToolRepository;
 import com.techcorp.management.dto.ToolDetailDTO;
 import org.springframework.web.bind.annotation.*;
 
+import jakarta.validation.Valid;
+
 import java.util.Map;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -19,6 +21,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.PageRequest;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.HttpStatus;
 
 @RestController
 @RequestMapping("/tools")
@@ -36,6 +39,18 @@ public class ToolController {
     public ResponseEntity<ToolDetailDTO> getToolById(@PathVariable Long id) {
         ToolDetailDTO tool = toolService.getToolById(id);
         return ResponseEntity.ok(tool);
+    }
+
+    @PostMapping
+    public ResponseEntity<ToolDetailDTO> createTool(@Valid @RequestBody Tool tool){
+        ToolDetailDTO response = toolService.createTool(tool);
+        return new ResponseEntity<>(response, HttpStatus.CREATED);
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<ToolDetailDTO> updateTool(@PathVariable Long id, @RequestBody Tool tool) {
+        ToolDetailDTO updated = toolService.updateTool(id, tool);
+        return ResponseEntity.ok(updated);
     }
 
     @GetMapping

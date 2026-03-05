@@ -15,4 +15,6 @@ public interface ToolRepository extends JpaRepository<Tool, Long>, JpaSpecificat
     List<Tool> findByOwnerDepartmentAndStatus(Department department, ToolStatus status);
 
     List<Tool> findByMonthlyCostBetweenAndCategory(Double min, Double max, Category category);
+
+    boolean existsByName(String name);
 }

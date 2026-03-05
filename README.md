@@ -17,6 +17,11 @@ Documentation : OpenAPI / Swagger UI (accessible sur /api/docs a venir)
 4. API disponible sur http://localhost:8085
 5. Documentation: http://localhost:[port]/[chemin_docs]
 
+## A faire
+- Mise en place des logs et des tests
+- Création de la documentation
+- Mise à jour README avec Justification de l'architecture
+
 ## Configuration
 - Variables d'environnement: voir .env.example
 - Configuration DB: [instructions_connexion]

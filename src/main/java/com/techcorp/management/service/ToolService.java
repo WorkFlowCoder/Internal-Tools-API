@@ -6,8 +6,10 @@ import com.techcorp.management.entity.ToolStatus;
 import com.techcorp.management.entity.Department;
 import com.techcorp.management.entity.UsageLog;
 import com.techcorp.management.repository.ToolRepository;
+import com.techcorp.management.repository.CategoryRepository;
 import com.techcorp.management.repository.ToolSpecifications;
 import com.techcorp.management.exception.ResourceNotFoundException;
+import com.techcorp.management.exception.BadRequestException;
 
 import com.techcorp.management.dto.ToolDetailDTO;
 import com.techcorp.management.dto.UsageMetricsDTO;
@@ -29,9 +31,11 @@ import java.util.List;
 public class ToolService {
 
     private final ToolRepository toolRepository;
+    private final CategoryRepository categoryRepository;
 
-    public ToolService(ToolRepository toolRepository) {
+    public ToolService(ToolRepository toolRepository,CategoryRepository categoryRepository) {
         this.toolRepository = toolRepository;
+        this.categoryRepository = categoryRepository;
     }
 
     public List<ToolDetailDTO> getFilteredTools(Department dept, ToolStatus status, Double min, Double max, Category category) {
@@ -107,5 +111,59 @@ public class ToolService {
 
         dto.setUsageMetrics(usageMetrics);
         return dto;
+    }
+
+    public ToolDetailDTO createTool(Tool tool) {
+        if (toolRepository.existsByName(tool.getName())) {
+            throw new BadRequestException("Un outil avec le nom '" + tool.getName() + "' existe déjà.");
+        }
+        if (tool.getMonthlyCost() != null && tool.getMonthlyCost() < 0) {
+            throw new BadRequestException("Cout doit être >=0 et 2 digit maximum !");
+        }
+        this.validateCost(tool.getMonthlyCost());
+        if (tool.getCategory() != null && tool.getCategory().getId() != null) {
+            Category categorie = this.categoryRepository.findById(tool.getCategory().getId())
+                    .orElseThrow(() -> new ResourceNotFoundException("Catégorie non trouvée"));
+            tool.setCategory(categorie);
+        }
+
+        tool.setId(null);
+        if (tool.getStatus() == null) {
+            tool.setStatus(ToolStatus.active);
+        }
+        Tool savedTool = toolRepository.save(tool);
+        return mapToDetailDTO(savedTool);
+    }
+
+    private void validateCost(Double cost) {
+        String text = Double.toString(Math.abs(cost));
+        int integerPlaces = text.indexOf('.');
+        int decimalPlaces = text.length() - integerPlaces - 1;
+
+        if (decimalPlaces > 2) {
+            throw new BadRequestException("Cout avec 2 décimales max!");
+        }
+    }
+
+    public ToolDetailDTO updateTool(Long id, Tool toolDetails) {
+        Tool existingTool = toolRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Tool not found with id " + id));
+        //Changement description
+        if (toolDetails.getDescription() != null) {
+            existingTool.setDescription(toolDetails.getDescription());
+        }
+        //Changement cout
+        if (toolDetails.getMonthlyCost() != null) {
+            if (toolDetails.getMonthlyCost() < 0) {
+                throw new BadRequestException("Cout ne peut être négatif !");
+            }
+            existingTool.setMonthlyCost(toolDetails.getMonthlyCost());
+        }
+        //Le status
+        if (toolDetails.getStatus() != null) {
+            existingTool.setStatus(toolDetails.getStatus());
+        }
+        Tool updatedTool = toolRepository.save(existingTool);
+        return mapToDetailDTO(updatedTool);
     }
 }
