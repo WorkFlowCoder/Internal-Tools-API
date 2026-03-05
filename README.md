@@ -14,7 +14,7 @@ Documentation : OpenAPI / Swagger UI (accessible sur /api/docs a venir)
 
 2. 'sudo apt install maven'
 3. './mvnw spring-boot:run'
-4. API disponible sur http://localhost:[port]
+4. API disponible sur http://localhost:8085
 5. Documentation: http://localhost:[port]/[chemin_docs]
 
 ## Configuration
