@@ -1,6 +1,6 @@
 package com.techcorp.management.entity;
 
-public enum ToolDepartment {
+public enum Department {
     Engineering,
     Sales,
     Marketing,

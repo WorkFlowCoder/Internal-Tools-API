@@ -3,7 +3,7 @@ package com.techcorp.management.repository;
 import com.techcorp.management.entity.Tool;
 import com.techcorp.management.entity.Category;
 import com.techcorp.management.entity.ToolStatus;
-import com.techcorp.management.entity.ToolDepartment;
+import com.techcorp.management.entity.Department;
 
 import java.util.List;
 
@@ -12,7 +12,7 @@ import jakarta.persistence.criteria.Join;
 
 public class ToolSpecifications {
 
-    public static Specification<Tool> hasDepartment(ToolDepartment dept) {
+    public static Specification<Tool> hasDepartment(Department dept) {
         return (root, query, cb) -> dept == null ? null : cb.equal(root.get("ownerDepartment"), dept);
     }
 
@@ -29,7 +29,7 @@ public class ToolSpecifications {
         };
     }
 
-    public static Specification<Tool> hasCategory(Category categoryId) {
-        return (root, query, cb) -> categoryId == null ? null : cb.equal(root.get("category").get("id"), categoryId);
+    public static Specification<Tool> hasCategory(Category category) {
+        return (root, query, cb) -> category == null ? null : cb.equal(root.get("category").get("id"), category);
     }
 }

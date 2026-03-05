@@ -15,8 +15,8 @@ import java.util.List;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "tools")
-public class Tool {
+@Table(name = "users")
+public class User {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -24,30 +24,19 @@ public class Tool {
 
     private String name;
 
-    private String description;
-
-    private String vendor;
-
-    @Column(name = "website_url")
-    private String websiteUrl;
-
-    @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "category_id")
-    @JsonIgnoreProperties("category")
-    private Category category;
-
-    @Column(name = "monthly_cost")
-    private Double monthlyCost;
-
-    @Column(name = "active_users_count")
-    private Integer activeUsersCount;
-
-    @Column(name = "owner_department")
-    @Enumerated(EnumType.STRING)
-    private Department ownerDepartment;
+    private String email;
 
     @Enumerated(EnumType.STRING)
-    private ToolStatus status;
+    private Department department;
+
+    @Enumerated(EnumType.STRING)
+    private UserRole role;
+
+    @Enumerated(EnumType.STRING)
+    private UserStatus status;
+
+    @Column(name="hire_date")
+    private LocalDateTime hireDate;
 
     @Column(name = "created_at", updatable = false)
     private LocalDateTime createdAt;
@@ -55,19 +44,15 @@ public class Tool {
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
 
-    @OneToMany(mappedBy = "tool", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     @JsonIgnore
     private List<UsageLog> usageLogs;
 
-    @OneToMany(mappedBy = "tool", cascade = CascadeType.ALL)
-    @JsonIgnore
-    private List<CostTracking> costTrackings;
-
-    @OneToMany(mappedBy = "tool", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     @JsonIgnore
     private List<AccessRequest> accessRequests;
 
-    @OneToMany(mappedBy = "tool", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     @JsonIgnore
     private List<UserToolAccess> userToolAccess;
 }

@@ -4,7 +4,7 @@ import com.techcorp.management.entity.Tool;
 import com.techcorp.management.entity.Category;
 import com.techcorp.management.entity.ToolStatus;
 import com.techcorp.management.service.ToolService;
-import com.techcorp.management.entity.ToolDepartment;
+import com.techcorp.management.entity.Department;
 import com.techcorp.management.repository.ToolRepository;
 import org.springframework.web.bind.annotation.*;
 
@@ -16,6 +16,8 @@ import java.util.List;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.PageRequest;
+
+import org.springframework.http.ResponseEntity;
 
 @RestController
 @RequestMapping("/tools")
@@ -29,9 +31,15 @@ public class ToolController {
         this.toolRepository = toolRepository;
     }
 
+    @GetMapping("/{id}")
+    public ResponseEntity<Tool> getToolById(@PathVariable Long id) {
+        Tool tool = toolService.getToolById(id);
+        return ResponseEntity.ok(tool);
+    }
+
     @GetMapping
     public Map<String, Object> getTools(
-        @RequestParam(required = false) ToolDepartment department,
+        @RequestParam(required = false) Department department,
         @RequestParam(required = false) ToolStatus status,
         @RequestParam(required = false, name = "min_cost") Double minCost,
         @RequestParam(required = false, name = "max_cost") Double maxCost,
