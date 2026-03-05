@@ -26,8 +26,9 @@ public class Tool {
     @Column(name = "website_url")
     private String websiteUrl;
 
-    @Column(name = "category_id")
-    private Integer categoryId;
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "category_id")
+    private Category categoryId;
 
     @Column(name = "monthly_cost")
     private Double monthlyCost;
@@ -36,9 +37,11 @@ public class Tool {
     private Integer activeUsersCount;
 
     @Column(name = "owner_department")
-    private String ownerDepartement;
+    @Enumerated(EnumType.STRING)
+    private ToolDepartment ownerDepartment;
 
-    private String status;
+    @Enumerated(EnumType.STRING)
+    private ToolStatus status;
 
     @Column(name = "created_at", updatable = false)
     private LocalDateTime createdAt;

@@ -1,9 +1,15 @@
 package com.techcorp.management.service;
 
 import com.techcorp.management.entity.Tool;
+import com.techcorp.management.entity.Category;
+import com.techcorp.management.entity.ToolStatus;
+import com.techcorp.management.entity.ToolDepartment;
 import com.techcorp.management.repository.ToolRepository;
+import com.techcorp.management.repository.ToolSpecifications;
 import org.springframework.stereotype.Service;
 import java.util.List;
+
+import org.springframework.data.jpa.domain.Specification;
 
 @Service
 public class ToolService {
@@ -14,15 +20,14 @@ public class ToolService {
         this.toolRepository = toolRepository;
     }
 
-    public List<Tool> getFilteredTools(String dept, String status, Double min, Double max, Integer categoryId) {
-        if (dept != null && status != null) {
-            return toolRepository.findByOwnerDepartementAndStatus(dept, status);
-        }
-        
-        if (min != null && max != null && categoryId != null) {
-            return toolRepository.findByMonthlyCostBetweenAndCategoryId(min, max, categoryId);
-        }
-        
-        return toolRepository.findAll();
+    public List<Tool> getFilteredTools(ToolDepartment dept, ToolStatus status, Double min, Double max, Category categoryId) {
+
+        Specification<Tool> spec = Specification
+            .where(ToolSpecifications.hasDepartment(dept))
+            .and(ToolSpecifications.hasStatus(status))
+            .and(ToolSpecifications.costBetween(min, max))
+            .and(ToolSpecifications.hasCategory(categoryId));
+
+        return toolRepository.findAll(spec);
     }
 }
