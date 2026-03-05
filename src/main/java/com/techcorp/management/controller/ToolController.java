@@ -6,6 +6,7 @@ import com.techcorp.management.entity.ToolStatus;
 import com.techcorp.management.service.ToolService;
 import com.techcorp.management.entity.Department;
 import com.techcorp.management.repository.ToolRepository;
+import com.techcorp.management.dto.ToolDetailDTO;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Map;
@@ -32,8 +33,8 @@ public class ToolController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Tool> getToolById(@PathVariable Long id) {
-        Tool tool = toolService.getToolById(id);
+    public ResponseEntity<ToolDetailDTO> getToolById(@PathVariable Long id) {
+        ToolDetailDTO tool = toolService.getToolById(id);
         return ResponseEntity.ok(tool);
     }
 
@@ -47,7 +48,7 @@ public class ToolController {
         @RequestParam(required = false) Integer size, // Pagination
         @RequestParam(required = false) Category categoryId
     ) {
-        List<Tool> content;
+        List<ToolDetailDTO> content;
         long totalElements;
         Integer totalPages = null;
         Integer currentPage = null;
@@ -57,7 +58,7 @@ public class ToolController {
         totalElements = content.size();
         if (page != null && size != null) {
             Pageable pageable = PageRequest.of(page, size);
-            Page<Tool> toolPage = toolService.getFilteredToolsPagination(department, status, minCost, maxCost, categoryId, pageable);
+            Page<ToolDetailDTO> toolPage = toolService.getFilteredToolsPagination(department, status, minCost, maxCost, categoryId, pageable);
             content = toolPage.getContent();
             totalPages = toolPage.getTotalPages();
             currentPage = toolPage.getNumber();
