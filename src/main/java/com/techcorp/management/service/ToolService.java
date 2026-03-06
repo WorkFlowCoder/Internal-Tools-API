@@ -25,8 +25,11 @@ import org.springframework.stereotype.Service;
 
 import org.springframework.http.ResponseEntity;
 
+import lombok.extern.slf4j.Slf4j;
+
 import java.util.List;
 
+@Slf4j
 @Service
 public class ToolService {
 
@@ -39,6 +42,7 @@ public class ToolService {
     }
 
     public List<ToolDetailDTO> getFilteredTools(Department dept, ToolStatus status, Double min, Double max, Category category) {
+        log.info("Tentative de récupération des tools");
         Specification<Tool> spec = buildSpec(dept, status, min, max, category);
         List<Tool> tools = toolRepository.findAll(spec);
         return tools.stream()
@@ -47,14 +51,16 @@ public class ToolService {
     }
 
     public Page<ToolDetailDTO> getFilteredToolsPagination(Department dept, ToolStatus status, Double min, Double max, Category category, Pageable pageable) {
+        log.info("Tentative de récupération des tools (avec pagination)");
         Specification<Tool> spec = buildSpec(dept, status, min, max, category);
         Page<Tool> toolPage = toolRepository.findAll(spec, pageable);
         return toolPage.map(this::mapToDetailDTO);
     }
 
     public ToolDetailDTO getToolById(Long id) {
+        log.info("Tentative de récupération du tool avec l'id : {}", id);
         Tool tool = toolRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Tool with ID " + id + " not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Le tool avec l'id " + id + " n'existe pas!"));
         return mapToDetailDTO(tool);
     }
 
@@ -114,6 +120,7 @@ public class ToolService {
     }
 
     public ToolDetailDTO createTool(Tool tool) {
+        log.info("Tentative d'ajout d'un tool");
         if (toolRepository.existsByName(tool.getName())) {
             throw new BadRequestException("Un outil avec le nom '" + tool.getName() + "' existe déjà.");
         }
@@ -132,6 +139,7 @@ public class ToolService {
             tool.setStatus(ToolStatus.active);
         }
         Tool savedTool = toolRepository.save(tool);
+        log.info("Tool créé avec succès avec l'id : {}", savedTool.getId());
         return mapToDetailDTO(savedTool);
     }
 
@@ -146,8 +154,9 @@ public class ToolService {
     }
 
     public ToolDetailDTO updateTool(Long id, Tool toolDetails) {
+        log.info("Tentative de modification d'un tool");
         Tool existingTool = toolRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Tool not found with id " + id));
+                .orElseThrow(() -> new ResourceNotFoundException("Aucun tool trouvé avec l'id " + id));
         //Changement description
         if (toolDetails.getDescription() != null) {
             existingTool.setDescription(toolDetails.getDescription());
@@ -164,6 +173,7 @@ public class ToolService {
             existingTool.setStatus(toolDetails.getStatus());
         }
         Tool updatedTool = toolRepository.save(existingTool);
+        log.info("Tool modifié avec succès avec l'id : {}", updatedTool.getId());
         return mapToDetailDTO(updatedTool);
     }
 }

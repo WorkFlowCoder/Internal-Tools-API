@@ -23,6 +23,9 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.HttpStatus;
 
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
 @RestController
 @RequestMapping("/tools")
 public class ToolController {
@@ -37,18 +40,21 @@ public class ToolController {
 
     @GetMapping("/{id}")
     public ResponseEntity<ToolDetailDTO> getToolById(@PathVariable Long id) {
+        log.debug("Requête GET reçue pour obtenir le tool avec l'id : {}", id);
         ToolDetailDTO tool = toolService.getToolById(id);
         return ResponseEntity.ok(tool);
     }
 
     @PostMapping
     public ResponseEntity<ToolDetailDTO> createTool(@Valid @RequestBody Tool tool){
+        log.debug("Requête POST reçue pour créé le tool : {}", tool);
         ToolDetailDTO response = toolService.createTool(tool);
         return new ResponseEntity<>(response, HttpStatus.CREATED);
     }
 
     @PutMapping("/{id}")
     public ResponseEntity<ToolDetailDTO> updateTool(@PathVariable Long id, @RequestBody Tool tool) {
+        log.debug("Requête POST reçue pour modifier le tool avec l'id : {} avec les informations : {}", id ,tool);
         ToolDetailDTO updated = toolService.updateTool(id, tool);
         return ResponseEntity.ok(updated);
     }
@@ -63,6 +69,7 @@ public class ToolController {
         @RequestParam(required = false) Integer size, // Pagination
         @RequestParam(required = false) Category categoryId
     ) {
+        log.debug("Requête GET reçue pour obtenir les tools");
         List<ToolDetailDTO> content;
         long totalElements;
         Integer totalPages = null;
