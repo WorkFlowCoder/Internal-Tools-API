@@ -13,6 +13,8 @@ import com.fasterxml.jackson.annotation.*;
 
 import org.hibernate.annotations.UpdateTimestamp;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import java.util.List;
 
 @Entity
@@ -51,8 +53,8 @@ public class Tool {
     @Column(name = "monthly_cost", columnDefinition = "DOUBLE")
     private Double monthlyCost;
 
-    @Column(name = "active_users_count")
-    private Integer activeUsersCount;
+    @Column(name = "active_users_count", nullable = false)
+    private Integer activeUsersCount = 0;
 
     @NotNull(message = "Departement obligatoire")
     @Column(name = "owner_department")
@@ -84,4 +86,13 @@ public class Tool {
     @OneToMany(mappedBy = "tool", cascade = CascadeType.ALL)
     @JsonIgnore
     private List<UserToolAccess> userToolAccess;
+
+    @JsonProperty("category_id")
+    public void setCategoryFromId(Long id) {
+        if (id != null) {
+            Category cat = new Category();
+            cat.setId(id);
+            this.category = cat;
+        }
+    }
 }

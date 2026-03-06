@@ -149,7 +149,7 @@ public class ToolService {
         int decimalPlaces = text.length() - integerPlaces - 1;
 
         if (decimalPlaces > 2) {
-            throw new BadRequestException("Cout avec 2 décimales max!");
+            throw new BadRequestException("Cout doit être >=0 et 2 digit maximum !");
         }
     }
 

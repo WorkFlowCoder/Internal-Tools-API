@@ -13,12 +13,15 @@ Documentation : OpenAPI / Swagger UI (accessible sur /api/docs a venir)
 1. (sudo) `docker-compose --profile mysql up -d`
 
 2. 'sudo apt install maven'
+
 3. './mvnw spring-boot:run'
+
 4. API disponible sur http://localhost:8085
-5. Documentation: http://localhost:[port]/[chemin_docs]
+
+5. Documentation: http://localhost:8085/[chemin_docs]
 
 ## A faire
-- Mise en place des logs et des tests
+- Mise en place de la gestion d'erreur
 - Création de la documentation
 - Mise à jour README avec Justification de l'architecture
 
@@ -27,7 +30,17 @@ Documentation : OpenAPI / Swagger UI (accessible sur /api/docs a venir)
 - Configuration DB: [instructions_connexion]
 
 ## Tests  
-[commande_lancement_tests] - Tests unitaires + intégration
+
+Afin de lancer les test, il faut utiliser :
+```bash
+mvn test
+```
+
+Cela va lancer :
+
+- TestToolControllerIntegration (Pour les tests d'intégrations)
+
+Tests unitaires + intégration
 
 ## Architecture
 - [Justification_choix_tech]
