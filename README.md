@@ -2,32 +2,24 @@
 Cette API REST permet de gérer les outils SaaS internes d’une entreprise (ex : Slack, GitHub). Elle permet de lister, consulter, ajouter et modifier les outils avec des filtres, des validations et une gestion des erreurs. Son but est de centraliser les informations sur les outils, leurs coûts et leur usage pour faciliter la gestion interne.
 
 ## Technologies
-Langage : Java 17
-Framework : Spring Boot 4.0.3
-Base de données : MySQL
-Port API : 8085
-Documentation : OpenAPI / Swagger UI (accessible sur /api/docs a venir)
+
+- Langage : Java 17
+- Framework : Spring Boot 4.0.3
+- Base de données : MySQL
+- Port API : 8085
+- Documentation : Swagger UI
 
 ## Quick Start
 
 1. (sudo) `docker-compose --profile mysql up -d`
 
-2. 'sudo apt install maven'
+2. `sudo apt install maven`
 
-3. './mvnw spring-boot:run'
+3. `./mvnw spring-boot:run`
 
 4. API disponible sur http://localhost:8085
 
-5. Documentation: http://localhost:8085/[chemin_docs]
-
-## A faire
-- Mise en place de la gestion d'erreur
-- Création de la documentation
-- Mise à jour README avec Justification de l'architecture
-
-## Configuration
-- Variables d'environnement: voir .env.example
-- Configuration DB: [instructions_connexion]
+5. Documentation: http://localhost:8085/api/swagger-ui/index.html
 
 ## Tests  
 
@@ -36,12 +28,24 @@ Afin de lancer les test, il faut utiliser :
 mvn test
 ```
 
-Cela va lancer :
+## Endpoints Principaux
 
-- TestToolControllerIntegration (Pour les tests d'intégrations)
-
-Tests unitaires + intégration
+- **GET - /api/tools** Liste les outils (avec filtres & pagination)
+- **GET - /api/tools/{id}** Détails complets d'un outil
+- **POST - /api/tools** Ajouter un nouveau tool
+- **PUT - /api/tools/{id}** Modifier un tool existant
 
 ## Architecture
-- [Justification_choix_tech]
-- [Structure_projet_expliquee]
+
+Le projet suit l'architecture suivante pour séparer les responsabilités :
+
+- ***controller :** Point d'entrée API et validation des requêtes.
+- **service :** Logique métier, calculs et règles de gestion.
+- **repository :** Accès à la base de données via des interfaces JPA.
+- **entity :** Modèles de données (MySQL).
+- **dto :** Objets de transfert de données pour sécuriser et filtrer les données.
+- **exception :** Gestionnaire d'erreurs.
+
+### Choix de l'architecture
+
+Utilisation de Spring Boot pour sa robustess et sa performance. Permet une gestion fiable et simple des données relationnelles et requêtes simplifiées.
